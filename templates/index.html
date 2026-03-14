@@ -6,87 +6,114 @@
 <title>Phishing Email Analyzer</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:#0a0a0f; color:#e0e0e0; font-family:'Courier New',monospace; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-  .container { width:100%; max-width:800px; padding:40px 24px; }
-  .header { text-align:center; margin-bottom:40px; }
-  .tag { color:#ff6b6b; font-size:13px; letter-spacing:4px; margin-bottom:12px; }
-  h1 { font-size:clamp(28px,5vw,46px); font-weight:900; letter-spacing:2px; color:#fff; }
-  .subtitle { color:#888; font-size:13px; letter-spacing:3px; margin-top:8px; }
-  .card { background:#111118; border:1px solid #1e1e2e; padding:32px; position:relative; }
-  .card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,#ff6b6b,#ffa94d); }
-  .tabs { display:flex; gap:0; margin-bottom:24px; border-bottom:1px solid #1e1e2e; }
-  .tab { padding:10px 24px; cursor:pointer; font-size:12px; letter-spacing:2px; color:#666; border-bottom:2px solid transparent; transition:all .2s; background:none; border-left:none; border-right:none; border-top:none; font-family:'Courier New',monospace; }
-  .tab.active { color:#ff6b6b; border-bottom:2px solid #ff6b6b; }
+  body { background:#f4f6f9; color:#1a1a2e; font-family:'Segoe UI', Arial, sans-serif; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 20px; }
+  .container { width:100%; max-width:720px; }
+  .header { text-align:center; margin-bottom:36px; }
+  .tag { color:#e74c3c; font-size:11px; letter-spacing:4px; font-weight:700; margin-bottom:10px; font-family:'Courier New',monospace; }
+  h1 { font-size:clamp(26px,5vw,42px); font-weight:800; color:#1a1a2e; letter-spacing:1px; }
+  .subtitle { color:#555; font-size:12px; letter-spacing:3px; margin-top:8px; font-family:'Courier New',monospace; }
+  .card { background:#fff; border-radius:12px; box-shadow:0 4px 24px rgba(0,0,0,0.08); overflow:hidden; }
+  .card-header { background:#1a1a2e; padding:20px 28px; }
+  .card-header h2 { color:#fff; font-size:13px; letter-spacing:3px; font-weight:600; font-family:'Courier New',monospace; }
+  .card-header p { color:#aab; font-size:11px; margin-top:4px; }
+  .card-body { padding:28px; }
+  .tabs { display:flex; margin-bottom:24px; border-bottom:2px solid #f0f0f0; }
+  .tab { padding:10px 20px; cursor:pointer; font-size:12px; letter-spacing:2px; color:#666; border-bottom:2px solid transparent; margin-bottom:-2px; transition:all .2s; background:none; border-left:none; border-right:none; border-top:none; font-family:'Courier New',monospace; font-weight:600; }
+  .tab.active { color:#e74c3c; border-bottom-color:#e74c3c; }
   .tab-content { display:none; }
   .tab-content.active { display:block; }
-  label { display:block; font-size:11px; letter-spacing:2px; color:#ff6b6b; margin-bottom:8px; }
-  .upload-area { border:2px dashed #2a2a3e; padding:40px; text-align:center; cursor:pointer; transition:border-color .2s; margin-bottom:20px; }
-  .upload-area:hover, .upload-area.dragover { border-color:#ff6b6b; }
-  .upload-area p { color:#555; font-size:13px; }
-  .upload-area .icon { font-size:36px; margin-bottom:12px; }
+  label { display:block; font-size:11px; letter-spacing:2px; color:#e74c3c; margin-bottom:8px; font-weight:700; font-family:'Courier New',monospace; }
+  .upload-area { border:2px dashed #dde1e7; border-radius:8px; padding:40px 20px; text-align:center; cursor:pointer; transition:all .2s; background:#fafbfc; }
+  .upload-area:hover, .upload-area.dragover { border-color:#e74c3c; background:#fff5f5; }
+  .upload-area .icon { font-size:40px; margin-bottom:12px; }
+  .upload-area p { color:#666; font-size:13px; }
+  .upload-area .browse { color:#e74c3c; font-weight:600; }
   input[type=file] { display:none; }
-  textarea { width:100%; background:#0a0a0f; border:1px solid #2a2a3e; color:#e0e0e0; font-family:'Courier New',monospace; font-size:12px; padding:16px; resize:vertical; min-height:200px; outline:none; transition:border-color .2s; }
-  textarea:focus { border-color:#ff6b6b; }
-  .btn { width:100%; padding:16px; background:#ff6b6b; color:#fff; border:none; font-family:'Courier New',monospace; font-size:13px; letter-spacing:3px; cursor:pointer; font-weight:700; transition:background .2s; margin-top:16px; }
-  .btn:hover { background:#ff5252; }
-  .btn:disabled { background:#333; cursor:not-allowed; color:#666; }
-  .terminal { background:#050508; border:1px solid #1e1e2e; padding:16px; font-size:12px; display:none; margin-top:20px; min-height:80px; }
-  .terminal .line { color:#ff6b6b; margin-bottom:4px; }
-  .progress-bar { height:2px; background:#1e1e2e; margin-top:12px; }
-  .progress-fill { height:100%; background:#ff6b6b; width:0%; transition:width .4s; }
-  .result-btn { width:100%; padding:16px; background:#ff6b6b; color:#fff; border:none; font-family:'Courier New',monospace; font-size:13px; letter-spacing:3px; cursor:pointer; font-weight:700; display:none; margin-top:12px; text-decoration:none; text-align:center; }
-  .nav { display:flex; gap:32px; justify-content:center; margin-top:32px; }
-  .nav a { color:#555; font-size:11px; letter-spacing:2px; text-decoration:none; }
-  .nav a:hover { color:#ff6b6b; }
-  .vt-badge { display:inline-block; background:#1e1e2e; color:#ffa94d; font-size:10px; letter-spacing:1px; padding:3px 10px; margin-bottom:20px; }
-  .selected-file { color:#ff6b6b; font-size:12px; margin-top:8px; text-align:center; }
+  .selected-file { color:#e74c3c; font-size:12px; margin-top:10px; text-align:center; font-family:'Courier New',monospace; }
+  textarea { width:100%; background:#fafbfc; border:2px solid #dde1e7; border-radius:8px; color:#1a1a2e; font-family:'Courier New',monospace; font-size:12px; padding:16px; resize:vertical; min-height:200px; outline:none; transition:border-color .2s; }
+  textarea:focus { border-color:#e74c3c; }
+  textarea::placeholder { color:#ccc; }
+  .btn { width:100%; padding:15px; background:#e74c3c; color:#fff; border:none; border-radius:8px; font-family:'Courier New',monospace; font-size:12px; letter-spacing:3px; cursor:pointer; font-weight:700; transition:background .2s; margin-top:16px; }
+  .btn:hover { background:#c0392b; }
+  .btn:disabled { background:#dde1e7; cursor:not-allowed; color:#aaa; }
+  .terminal { background:#1a1a2e; border-radius:8px; padding:20px; font-size:12px; display:none; margin-top:20px; min-height:80px; font-family:'Courier New',monospace; }
+  .terminal .t-header { color:#555; font-size:10px; letter-spacing:2px; margin-bottom:12px; border-bottom:1px solid #2a2a3e; padding-bottom:8px; }
+  .terminal .line { color:#51cf66; margin-bottom:4px; }
+  .terminal .line.error { color:#ff6b6b; }
+  .progress-bar { height:3px; background:#2a2a3e; margin-top:14px; border-radius:2px; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,#e74c3c,#ff6b6b); width:0%; transition:width .5s; border-radius:2px; }
+  .result-btn { display:none; width:100%; padding:15px; background:#1a1a2e; color:#fff; border:none; border-radius:8px; font-family:'Courier New',monospace; font-size:12px; letter-spacing:3px; cursor:pointer; font-weight:700; margin-top:12px; text-decoration:none; text-align:center; transition:background .2s; }
+  .result-btn:hover { background:#2c2c4e; }
+  .nav { display:flex; gap:32px; justify-content:center; margin-top:24px; }
+  .nav a { color:#555; font-size:11px; letter-spacing:2px; text-decoration:none; font-family:'Courier New',monospace; }
+  .nav a:hover { color:#e74c3c; }
+  .vt-badge { display:inline-flex; align-items:center; gap:6px; background:#fff5f5; border:1px solid #ffcdd2; color:#e74c3c; font-size:10px; letter-spacing:2px; padding:5px 14px; border-radius:20px; margin-bottom:20px; font-family:'Courier New',monospace; font-weight:700; }
+
+  /* Loading box */
+  .loading-box { display:none; margin-top:20px; background:#fafbfc; border:1px solid #e8eaed; border-radius:8px; padding:24px; text-align:center; }
+  .loading-box .loading-label { font-size:12px; letter-spacing:2px; color:#333; font-family:'Courier New',monospace; font-weight:600; margin-bottom:14px; }
+  .loading-track { height:6px; background:#e8eaed; border-radius:3px; overflow:hidden; }
+  .loading-fill { height:100%; background:linear-gradient(90deg,#e74c3c,#ff6b6b); border-radius:3px; width:0%; transition:width .5s ease; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+  .loading-dots { display:inline-block; animation:pulse 1.2s ease infinite; font-size:18px; letter-spacing:4px; color:#e74c3c; margin-top:10px; }
 </style>
 </head>
 <body>
 <div class="container">
   <div class="header">
     <div class="tag">[ SECURITY TOOL v1.0 ]</div>
-    <h1>PHISHING ANALYZER</h1>
-    <div class="subtitle">EMAIL FORENSICS + THREAT DETECTION + CVE REPORT</div>
+    <h1>Phishing Analyzer</h1>
+    <div class="subtitle">EMAIL FORENSICS + THREAT DETECTION + REPORT GENERATION</div>
   </div>
 
   {% if vt_configured %}
   <div style="text-align:center;margin-bottom:16px">
-    <span class="vt-badge">✓ VIRUSTOTAL INTEGRATED</span>
+    <span class="vt-badge">✓ VIRUSTOTAL CONNECTED</span>
   </div>
   {% endif %}
 
   <div class="card">
-    <div class="tabs">
-      <button class="tab active" onclick="switchTab('upload')">UPLOAD .EML FILE</button>
-      <button class="tab" onclick="switchTab('paste')">PASTE RAW EMAIL</button>
+    <div class="card-header">
+      <h2>ANALYZE SUSPICIOUS EMAIL</h2>
+      <p>Upload an .eml file or paste raw email content</p>
     </div>
-
-    <!-- Upload tab -->
-    <div class="tab-content active" id="tab-upload">
-      <div class="upload-area" id="dropzone" onclick="document.getElementById('fileInput').click()">
-        <div class="icon">📧</div>
-        <p>Drop your .eml file here or click to browse</p>
-        <input type="file" id="fileInput" accept=".eml,.txt" onchange="fileSelected(this)">
+    <div class="card-body">
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('upload')">UPLOAD .EML FILE</button>
+        <button class="tab" onclick="switchTab('paste')">PASTE RAW EMAIL</button>
       </div>
-      <div class="selected-file" id="selectedFile"></div>
-      <button class="btn" id="scanBtnFile" onclick="startScan('file')" disabled>ANALYZE EMAIL</button>
-    </div>
 
-    <!-- Paste tab -->
-    <div class="tab-content" id="tab-paste">
-      <label>PASTE RAW EMAIL HEADERS + BODY</label>
-      <textarea id="rawEmail" placeholder="Paste the full raw email content here including headers...&#10;&#10;Example:&#10;From: attacker@evil.com&#10;To: victim@company.com&#10;Subject: Urgent: Verify your account&#10;&#10;Dear Customer, your account has been suspended..."></textarea>
-      <button class="btn" id="scanBtnPaste" onclick="startScan('paste')">ANALYZE EMAIL</button>
-    </div>
+      <div class="tab-content active" id="tab-upload">
+        <div class="upload-area" id="dropzone" onclick="document.getElementById('fileInput').click()">
+          <div class="icon">📧</div>
+          <p>Drop your <strong>.eml</strong> file here or <span class="browse">click to browse</span></p>
+          <input type="file" id="fileInput" accept=".eml,.txt" onchange="fileSelected(this)">
+        </div>
+        <div class="selected-file" id="selectedFile"></div>
+        <button class="btn" id="scanBtnFile" onclick="startScan('file')" disabled>ANALYZE EMAIL</button>
+      </div>
 
-    <!-- Terminal output -->
-    <div class="terminal" id="terminal">
-      <div id="termLines"></div>
-      <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
-    </div>
+      <div class="tab-content" id="tab-paste">
+        <label>PASTE RAW EMAIL HEADERS + BODY</label>
+        <textarea id="rawEmail" placeholder="Paste the full raw email content here including headers...
 
-    <a class="result-btn" id="resultBtn" href="#">VIEW FULL REPORT</a>
+Example:
+From: attacker@evil.com
+To: victim@company.com
+Subject: Urgent: Verify your account
+
+Dear Customer, your account has been suspended..."></textarea>
+        <button class="btn" id="scanBtnPaste" onclick="startScan('paste')">ANALYZE EMAIL</button>
+      </div>
+
+      <div class="loading-box" id="loadingBox">
+        <div class="loading-label" id="loadingLabel">ANALYZING...</div>
+        <div class="loading-track"><div class="loading-fill" id="progress"></div></div>
+        <div class="loading-dots">● ● ●</div>
+      </div>
+
+      <a class="result-btn" id="resultBtn" href="#">VIEW FULL REPORT →</a>
+    </div>
   </div>
 
   <div class="nav">
@@ -97,6 +124,7 @@
 <script>
 let currentScanId = null;
 let pollInterval = null;
+let lastStatus = null;
 
 function switchTab(tab) {
   document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (tab==='upload'&&i===0)||(tab==='paste'&&i===1)));
@@ -121,25 +149,18 @@ function fileSelected(input) {
   }
 }
 
-function log(msg) {
-  const div = document.createElement('div');
-  div.className = 'line';
-  div.textContent = '>> ' + msg;
-  document.getElementById('termLines').appendChild(div);
-}
-
-function setProgress(pct) {
+function setProgress(pct, label) {
   document.getElementById('progress').style.width = pct + '%';
+  if (label) document.getElementById('loadingLabel').textContent = label;
 }
 
 async function startScan(mode) {
-  document.getElementById('terminal').style.display = 'block';
-  document.getElementById('termLines').innerHTML = '';
+  document.getElementById('loadingBox').style.display = 'block';
   document.getElementById('resultBtn').style.display = 'none';
   document.getElementById('scanBtnFile').disabled = true;
   document.getElementById('scanBtnPaste').disabled = true;
-  setProgress(10);
-  log('Starting analysis...');
+  lastStatus = null;
+  setProgress(10, 'STARTING ANALYSIS...');
 
   const formData = new FormData();
   if (mode === 'file') {
@@ -150,11 +171,9 @@ async function startScan(mode) {
 
   const resp = await fetch('/analyze', { method:'POST', body:formData });
   const data = await resp.json();
-  if (data.error) { log('Error: ' + data.error); return; }
+  if (data.error) { setProgress(0, 'ERROR: ' + data.error); return; }
 
   currentScanId = data.scan_id;
-  log('Scan started, ID: ' + currentScanId.substring(0,8) + '...');
-
   pollInterval = setInterval(() => pollStatus(currentScanId), 2000);
 }
 
@@ -163,20 +182,25 @@ async function pollStatus(id) {
   const data = await resp.json();
   const status = data.status;
 
-  if (status === 'parsing') { log('Parsing email headers and body...'); setProgress(30); }
-  else if (status === 'analyzing') { log('Running heuristic threat detection...'); setProgress(55); }
-  else if (status === 'virustotal') { log('Checking URLs against VirusTotal...'); setProgress(75); }
+  if (status === lastStatus) return;
+  lastStatus = status;
+
+  if (status === 'parsing')         setProgress(30, 'PARSING EMAIL...');
+  else if (status === 'analyzing')  setProgress(55, 'DETECTING THREATS...');
+  else if (status === 'virustotal') setProgress(75, 'SCANNING URLS WITH VIRUSTOTAL...');
   else if (status === 'complete') {
     clearInterval(pollInterval);
-    log('Analysis complete!');
-    setProgress(100);
-    document.getElementById('resultBtn').href = '/results/' + id;
-    document.getElementById('resultBtn').style.display = 'block';
-    document.getElementById('scanBtnFile').disabled = false;
-    document.getElementById('scanBtnPaste').disabled = false;
+    setProgress(100, 'DONE!');
+    setTimeout(() => {
+      document.getElementById('loadingBox').style.display = 'none';
+      document.getElementById('resultBtn').href = '/results/' + id;
+      document.getElementById('resultBtn').style.display = 'block';
+      document.getElementById('scanBtnFile').disabled = false;
+      document.getElementById('scanBtnPaste').disabled = false;
+    }, 600);
   } else if (status.startsWith('error')) {
     clearInterval(pollInterval);
-    log('Error: ' + status);
+    setProgress(0, 'ERROR — Please try again');
     document.getElementById('scanBtnFile').disabled = false;
     document.getElementById('scanBtnPaste').disabled = false;
   }

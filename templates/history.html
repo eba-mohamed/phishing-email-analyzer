@@ -5,30 +5,49 @@
 <title>Scan History | Phishing Analyzer</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:#0a0a0f; color:#e0e0e0; font-family:'Courier New',monospace; min-height:100vh; padding:40px 20px; }
+  body { background:#f4f6f9; color:#1a1a2e; font-family:'Segoe UI', Arial, sans-serif; min-height:100vh; padding:40px 20px; }
   .container { max-width:900px; margin:0 auto; }
-  .tag { color:#ff6b6b; font-size:12px; letter-spacing:4px; margin-bottom:8px; }
-  h1 { font-size:32px; font-weight:900; color:#fff; margin-bottom:4px; }
-  .subtitle { color:#555; font-size:11px; letter-spacing:2px; margin-bottom:32px; }
-  .scan-item { background:#111118; border:1px solid #1e1e2e; padding:20px 24px; margin-bottom:12px; display:flex; align-items:center; gap:20px; }
-  .verdict-badge { font-size:10px; font-weight:900; letter-spacing:2px; padding:4px 12px; flex-shrink:0; }
-  .badge-red { background:#ff5252; color:#fff; }
-  .badge-orange { background:#ffa94d; color:#000; }
-  .badge-yellow { background:#ffd43b; color:#000; }
-  .badge-green { background:#51cf66; color:#000; }
-  .scan-info { flex:1; }
-  .scan-subject { font-size:13px; color:#ccc; margin-bottom:4px; }
-  .scan-meta { font-size:10px; color:#555; letter-spacing:1px; }
-  .scan-score { font-size:20px; font-weight:900; color:#ff6b6b; flex-shrink:0; }
-  .empty { text-align:center; padding:60px; color:#555; }
-  .back-btn { display:inline-block; margin-top:24px; padding:12px 32px; border:1px solid #333; color:#888; font-family:'Courier New',monospace; font-size:11px; letter-spacing:2px; text-decoration:none; }
-  .back-btn:hover { border-color:#ff6b6b; color:#ff6b6b; }
+
+  .tag { color:#e74c3c; font-size:11px; letter-spacing:4px; font-weight:700; margin-bottom:8px; font-family:'Courier New',monospace; }
+  h1 { font-size:32px; font-weight:800; color:#1a1a2e; margin-bottom:4px; }
+  .subtitle { color:#555; font-size:12px; letter-spacing:2px; margin-bottom:32px; font-family:'Courier New',monospace; }
+
+  /* Scan item card */
+  .scan-item { background:#fff; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.06); padding:18px 24px; margin-bottom:12px; display:flex; align-items:center; gap:16px; transition:box-shadow .2s; }
+  .scan-item:hover { box-shadow:0 4px 16px rgba(0,0,0,0.10); }
+
+  /* Verdict badge */
+  .verdict-badge { font-size:10px; font-weight:700; letter-spacing:2px; padding:5px 14px; border-radius:6px; flex-shrink:0; font-family:'Courier New',monospace; }
+  .badge-red    { background:#fff0f0; color:#e74c3c; border:1px solid #ffcdd2; }
+  .badge-orange { background:#fff8f0; color:#e67e22; border:1px solid #ffe0b2; }
+  .badge-yellow { background:#fffdf0; color:#d4ac0d; border:1px solid #fff9c4; }
+  .badge-green  { background:#f0fff4; color:#27ae60; border:1px solid #c8e6c9; }
+
+  .scan-info { flex:1; min-width:0; }
+  .scan-subject { font-size:14px; font-weight:600; color:#1a1a2e; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .scan-meta { font-size:11px; color:#555; font-family:'Courier New',monospace; }
+
+  /* Risk score */
+  .scan-score { font-size:22px; font-weight:900; flex-shrink:0; }
+  .score-red    { color:#e74c3c; }
+  .score-orange { color:#e67e22; }
+  .score-yellow { color:#d4ac0d; }
+  .score-green  { color:#27ae60; }
+  .score-label  { font-size:11px; color:#999; font-weight:400; }
+
+  /* Empty state */
+  .empty { background:#fff; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.06); text-align:center; padding:60px; color:#555; font-size:14px; }
+  .empty .icon { font-size:48px; margin-bottom:16px; }
+
+  /* Back button */
+  .back-btn { display:inline-block; margin-top:24px; padding:13px 32px; background:#1a1a2e; color:#fff; font-family:'Courier New',monospace; font-size:11px; letter-spacing:2px; text-decoration:none; border-radius:8px; font-weight:700; }
+  .back-btn:hover { background:#2c2c4e; }
 </style>
 </head>
 <body>
 <div class="container">
   <div class="tag">[ SCAN HISTORY ]</div>
-  <h1>PREVIOUS ANALYSES</h1>
+  <h1>Previous Analyses</h1>
   <div class="subtitle">ALL EMAIL SCANS SAVED ON THIS MACHINE</div>
 
   {% if scans %}
@@ -39,14 +58,19 @@
         <div class="scan-subject">{{ scan.subject }}</div>
         <div class="scan-meta">FROM: {{ scan.from }} &nbsp;|&nbsp; {{ scan.timestamp }}</div>
       </div>
-      <div class="scan-score">{{ scan.risk_score }}<span style="font-size:12px;color:#555">/100</span></div>
+      <div class="scan-score score-{{ scan.verdict_color }}">
+        {{ scan.risk_score }}<span class="score-label">/100</span>
+      </div>
     </div>
     {% endfor %}
   {% else %}
-    <div class="empty">NO SCAN HISTORY FOUND. ANALYZE YOUR FIRST EMAIL.</div>
+    <div class="empty">
+      <div class="icon">📭</div>
+      <div>No scan history yet. Analyze your first email!</div>
+    </div>
   {% endif %}
 
-  <a href="/" class="back-btn">BACK TO ANALYZER</a>
+  <a href="/" class="back-btn">← BACK TO ANALYZER</a>
 </div>
 </body>
 </html>

@@ -1,0 +1,104 @@
+{
+  "scan_id": "229e94ba-05dd-496c-89f0-1ffb768495f9",
+  "timestamp": "20260314_132536",
+  "parsed": {
+    "subject": "URGENT: Your PayPal account has been suspended",
+    "from": "security@paypa1-alerts.com",
+    "to": "victim@example.com",
+    "reply_to": "collect@evil-domain.xyz",
+    "date": "Fri, 13 Mar 2026 10:00:00 +0000",
+    "links": [
+      "http://192.168.1.100/paypal-verify/login.php",
+      "http://bit.ly/paypal-urgent-verify",
+      "http://paypal.fake-secure-login.xyz/account/confirm"
+    ],
+    "attachments": [],
+    "body_text": "Dear Customer,\n\nURGENT ACTION REQUIRED: Your PayPal account has been suspended due to unusual activity and unauthorized login attempts.\n\nYour account will be permanently locked within 24 hours unless you verify your identity immediately.\n\nClick here to verify your account now:\nhttp://192.168.1.100/paypal-verify/login.php\nhttp://bit.ly/paypal-urgent-verify\nhttp://paypal.fake-secure-login.xyz/account/confirm\n\nWARNING: Failure to act immediately will result in permanent account suspension and loss "
+  },
+  "analysis": {
+    "flags": [
+      {
+        "type": "SENDER_SPOOFING",
+        "severity": "HIGH",
+        "detail": "From domain 'paypa1-alerts.com' differs from Reply-To domain 'evil-domain.xyz'"
+      },
+      {
+        "type": "RETURN_PATH_MISMATCH",
+        "severity": "MEDIUM",
+        "detail": "From domain 'paypa1-alerts.com' differs from Return-Path domain 'spammer.net'"
+      },
+      {
+        "type": "HIGH_URGENCY_LANGUAGE",
+        "severity": "HIGH",
+        "detail": "Multiple urgency keywords detected: urgent, immediately, action required, verify now, click here"
+      },
+      {
+        "type": "SUSPICIOUS_PHRASES",
+        "severity": "MEDIUM",
+        "detail": "Suspicious phrases found: dear customer"
+      },
+      {
+        "type": "URL_SHORTENER",
+        "severity": "MEDIUM",
+        "detail": "URL shorteners detected (hides real destination): bit.ly"
+      },
+      {
+        "type": "IP_ADDRESS_URL",
+        "severity": "HIGH",
+        "detail": "Links using raw IP addresses instead of domain names: http://192.168.1.100/paypal-verify/login.php"
+      },
+      {
+        "type": "BRAND_IMPERSONATION_URL",
+        "severity": "HIGH",
+        "detail": "Links appear to impersonate a known brand: http://paypal.fake-secure-login.xyz/account/confirm"
+      },
+      {
+        "type": "MISSING_DKIM",
+        "severity": "LOW",
+        "detail": "Email lacks DKIM signature \u2014 sender authenticity cannot be verified"
+      },
+      {
+        "type": "VIRUSTOTAL_MALICIOUS",
+        "severity": "CRITICAL",
+        "detail": "VirusTotal flagged 1 link(s) as malicious"
+      }
+    ],
+    "risk_score": 100,
+    "verdict": "PHISHING",
+    "verdict_color": "red",
+    "total_flags": 8,
+    "critical": 0,
+    "high": 4,
+    "medium": 3,
+    "low": 1
+  },
+  "vt_results": [
+    {
+      "url": "http://192.168.1.100/paypal-verify/login.php",
+      "malicious": 0,
+      "suspicious": 0,
+      "harmless": 64,
+      "total_engines": 95,
+      "verdict": "CLEAN",
+      "error": null
+    },
+    {
+      "url": "http://bit.ly/paypal-urgent-verify",
+      "malicious": 1,
+      "suspicious": 0,
+      "harmless": 63,
+      "total_engines": 95,
+      "verdict": "MALICIOUS",
+      "error": null
+    },
+    {
+      "url": "http://paypal.fake-secure-login.xyz/account/confirm",
+      "malicious": 0,
+      "suspicious": 1,
+      "harmless": 61,
+      "total_engines": 95,
+      "verdict": "SUSPICIOUS",
+      "error": null
+    }
+  ]
+}

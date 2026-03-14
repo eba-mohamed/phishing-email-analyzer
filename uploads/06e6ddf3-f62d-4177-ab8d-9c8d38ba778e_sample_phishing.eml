@@ -1,0 +1,30 @@
+From: security@paypa1-alerts.com
+To: victim@example.com
+Reply-To: collect@evil-domain.xyz
+Return-Path: <bounce@spammer.net>
+Subject: URGENT: Your PayPal account has been suspended
+Date: Fri, 13 Mar 2026 10:00:00 +0000
+Message-ID: <fake123@paypa1-alerts.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Dear Customer,
+
+URGENT ACTION REQUIRED: Your PayPal account has been suspended due to unusual activity and unauthorized login attempts.
+
+Your account will be permanently locked within 24 hours unless you verify your identity immediately.
+
+Click here to verify your account now:
+http://192.168.1.100/paypal-verify/login.php
+http://bit.ly/paypal-urgent-verify
+http://paypal.fake-secure-login.xyz/account/confirm
+
+WARNING: Failure to act immediately will result in permanent account suspension and loss of all funds.
+
+Limited time offer: Verify now to receive a $50 security bonus.
+
+Best regards,
+PayPal Security Team
+
+---
+This is an automated security alert. Do not reply to this email.
